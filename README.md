@@ -2,6 +2,8 @@
 
 Analisis penjualan 6 negara, 12 toko, dan 102 SKU (Januari–Desember 2023), dibangun dengan Excel.
 
+![Hasil Preview Ringkasan Dataset](Foto_ReadMD/SALES_DASHBOARD.jpeg)
+
 ---
 ## 1. Masalah
 
