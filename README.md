@@ -63,3 +63,8 @@ Persiapan data. Kolom tanggal pada sumber berupa angka serial Excel (misalnya 44
 ## 5. Tools
 
 ![Hasil Preview Rekomendasi](Foto_ReadMD/TOOLS.png)
+
+---
+## Download Dataset
+
+[Lihat Dataset](https://docs.google.com/spreadsheets/d/1Z0e_cr0GbaMOakDaPgnsIfBxjNTkQF6e/edit?usp=sharing&ouid=114030031442304265045&rtpof=true&sd=true)
