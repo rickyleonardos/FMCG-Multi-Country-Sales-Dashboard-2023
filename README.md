@@ -25,6 +25,11 @@ Dataset bersifat simulasi, sehingga temuan di bawah ditujukan untuk latihan anal
 bukan gambaran bisnis nyata.
 
 ---
+## Power Query Excel
+
+![Hasil Preview Power Query](Foto_ReadMD/POWER_QUERY.png)
+
+---
 ## 2. Analisis
 
 Persiapan data. Kolom tanggal pada sumber berupa angka serial Excel (misalnya 44927), lalu dikonversi menjadi tanggal di Power Query. Tiga kolom turunan ditambahkan: COGS (Units Sold × Purchase Cost), Profit (Net Sales − COGS), dan Month Label untuk mengurutkan bulan. Data kemudian dimuat ke Data Model dan dihitung dengan DAX.
