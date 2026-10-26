@@ -16,97 +16,12 @@ Pertanyaan bisnis yang dijawab:
 
 ---
 
-## Langkah Analisis & Kode SQL (Google BigQuery)
+## Ringkasan Dataset
 
-Langkah 1: Pembersihan & Validasi Data
-
-> Sebelum melakukan analisis mendalam, data divalidasi terlebih dahulu untuk memastikan tidak ada anomali (seperti total penjualan bernilai nol atau negatif) serta merapikan format teks.
+![Hasil Preview Ringkasan Dataset](Foto_ReadMD/1. RINGKASAN DATASET.png)
 
 ```
--- Pembersihan , Standarisasi, dan Validasi data mentah
-with cleaned_data as (
-  select 
-    trim(Market) as market,
-    trim(`Order Region`) as order_region,
-    trim(`Category Name`) as category_name,
-    trim(`Shipping Mode`) as shipping_mode,
-    coalesce(total_orders, 0) as total_orders,
-    coalesce(avg_days_variance, 0.0) as avg_days_variance,
-    coalesce(late_delivery_rate_pct, 0.0) as late_delivery_rate,
-    coalesce(cancellation_rate_pct, 0.0) as cancellation_rate,
-    coalesce(total_sales, 0.0) as total_sales,
-    coalesce(total_profit, 0.0) as total_profit,
--- Mengubah nilai loss menjadi absolut positif untuk memudahkan analisis biaya 
-    abs(coalesce(total_losses, 0.0)) as total_losses
-  from
-    `portfolio-supply-chain.supply_chain_analysis.raw_supply_chain`
-  where 
-    total_sales > 0 -- Validasi: menghapus data transaksi kosong/anomali
-)
-  select * from cleaned_data;
-```
-![Hasil Preview Query](result_query/1_result_query_data_cleaning.png)
 
-Langkah 2: Analisis Kinerja Pengiriman vs Kebocoran Profit
-
-> Query ini digunakan untuk membandingkan performa antar jenis pengiriman dan melihat korelasi antara keterlambatan dengan hilangnya profit perusahaan.
-
-```
--- Evaluasi Performa Pengiriman dan Kebocoran Finansial  (Finansial Leakage)
-with shipping_perfomance as (
-  select
-    `Shipping Mode` as shipping_mode,
-    sum(total_orders) as total_orders,
-    round(avg(late_delivery_rate_pct),2) as avg_late_delivery_rate_pct,
-    round(avg(avg_days_variance), 2) as avg_delay_days,
-    round(avg(total_sales), 2) as gross_sales,
-    round(avg(total_profit), 2) as net_profit,
-    round(sum(abs(total_losses)), 2) as total_financial_losses,
-    -- Rasio kebocoran keuangan dibandingkan total penjualan
-    round((sum(abs(total_losses)) / sum(total_sales)) * 100, 2) as loss_to_sales_ratio_pct
-  from
-    `portfolio-supply-chain.supply_chain_analysis.raw_supply_chain`
-  group by
-    1
-)
-select
-  shipping_mode,
-  total_orders,
-  avg_late_delivery_rate_pct,
-  avg_delay_days,
-  gross_sales,
-  total_financial_losses,
-  loss_to_sales_ratio_pct
-from
-  shipping_perfomance
-order by
-  avg_late_delivery_rate_pct desc;
-```
-![Hasil Preview Query](result_query/2_result_query_shipping_performance.png)
-
-Langkah 3: Analisis Risiko Kategori Produk
-
-> Mengidentifikasi 5 kategori produk teratas yang menyumbang kerugian (financial loss) terbesar akibat operasional logistik yang buruk.
-
-```
--- Top 5 kategori Produk Beresiko Tinggi dengan Kebocoran Profit Terbesar
-select
-  `Category Name` as category_name,
-  sum(total_orders) as total_orders,
-  round(sum(total_sales), 2) as total_sales,
-  round(sum(total_profit), 2) as total_profit,
-  round(sum(abs(total_losses)), 2) as financial_losses,
-  round((sum(abs(total_losses)) / sum(total_sales)) * 100, 2) as loss_to_sales_pct
-from
-  `portfolio-supply-chain.supply_chain_analysis.raw_supply_chain`
-group by
-  1
-order by
-  financial_losses desc
-limit
-  5;
-```
-![Hasil Preview Query](result_query/3_result_query_product_risk_analysis.png)
 
 ---
 
